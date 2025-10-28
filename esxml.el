@@ -182,6 +182,14 @@ BODY: is zero or more esxml expressions.  Having no body forms
       implies that the tag should be self closed.  If there is
       one or more body forms the tag will always be explicitly
       closed, even if they are the empty string."
+  ;; Minimal top-level validation for common errors
+  (cond
+   ((null esxml)
+    (error "Invalid esxml: nil is not a valid esxml expression"))
+   ((not (or (stringp esxml) (listp esxml)))
+    (error "Invalid esxml: must be a string or list, got %S" (type-of esxml)))
+   ((and (listp esxml) (< (length esxml) 2))
+    (error "Invalid esxml: list must have at least 2 elements, got %S" esxml)))
   (condition-case nil
       (esxml--to-xml-recursive esxml)
     (error (esxml-validate-form esxml))))
